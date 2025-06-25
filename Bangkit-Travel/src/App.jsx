@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./component/Navbar";  // Pastikan nama folder sesuai, misalnya 'components' bukan 'component'
 import HomePage from "./pages/HomePage";
 import Destinations from "./pages/Destinations";
-import Booking from "./pages/Booking";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import Transaction from "./pages/Transaction";
+import CartPage from "./pages/CartPage";
+import PromoPage from "./pages/Promo";
+
 
 
 function App() {
@@ -20,12 +21,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/destinations" element={<Destinations />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/promo" element={<PromoPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/transaction" element={<Transaction />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
       </div>
     </Router>

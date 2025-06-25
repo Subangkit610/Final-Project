@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useCart } from "../component/CartContext";
 
 const Destinations = () => {
   const [activities, setActivities] = useState([]);
   const [visible, setVisible] = useState(6); // jumlah item awal
   const [search, setSearch] = useState("");
   const [selectedMap, setSelectedMap] = useState(null);
+  const addToCart = useCart();
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -96,6 +98,15 @@ const Destinations = () => {
                     </button>
                     <span className="text-yellow-500 font-semibold">⭐ {activity.rating}</span>
                   </div>
+                  <div className="flex justify-between items-center mt-2">
+                  <button
+                    onClick={() => addToCart(activity)}
+                    className="text-sm text-white bg-green-600 hover:bg-green-700 px-4 py-1 rounded-full"
+                  >
+                    Add to Cart
+                  </button>
+                  
+                </div>
                 </div>
               </div>
             ))}

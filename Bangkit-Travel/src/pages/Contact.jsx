@@ -21,14 +21,14 @@ const Contact = () => {
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-gray-800">Email Us</h3>
               <p className="text-gray-600">For general inquiries, send us an email:</p>
-              <a href="mailto:info@travelwebsite.com" className="text-blue-600 hover:text-blue-800 font-semibold">info@travelwebsite.com</a>
+              <a href="mailto:info@travelwebsite.com" className="text-blue-600 hover:text-blue-800 font-semibold">bangkit.subenk@gmail.com</a>
             </div>
 
             {/* WhatsApp */}
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-gray-800">WhatsApp Customer Service</h3>
               <p className="text-gray-600">Need assistance? Reach out to us on WhatsApp:</p>
-              <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800 font-semibold">+123 456 7890</a>
+              <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800 font-semibold">+6285292211610</a>
             </div>
           </div>
         </div>
