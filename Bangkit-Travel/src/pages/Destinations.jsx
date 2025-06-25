@@ -7,7 +7,7 @@ const Destinations = () => {
   const [visible, setVisible] = useState(6); // jumlah item awal
   const [search, setSearch] = useState("");
   const [selectedMap, setSelectedMap] = useState(null);
-  const addToCart = useCart();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchActivities = async () => {

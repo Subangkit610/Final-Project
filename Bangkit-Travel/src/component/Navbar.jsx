@@ -27,18 +27,6 @@ const Navbar = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // // Ambil user dari cookie
-  // useEffect(() => {
-  //   const storedUser = Cookies.get("user");
-  //   if (storedUser) {
-  //     try {
-  //       setUser(JSON.parse(storedUser));
-  //     } catch (err) {
-  //       console.error("Gagal parse cookie user:", err);
-  //     }
-  //   }
-  // }, []);
-
   // Tutup dropdown jika klik di luar
   useEffect(() => {
     const handleClickOutside = (event) => {

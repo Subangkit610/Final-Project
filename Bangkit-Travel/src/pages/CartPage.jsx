@@ -1,10 +1,38 @@
-import React from "react";
-import { useCart } from "../component/CartContext"; // ✅ Tambahkan ; dan pastikan path benar
+import React, {useEffect, useState} from "react";
+import { useCart } from "../component/CartContext";
+import axios from "axios";
 
 const CartPage = () => {
-  const { cartItems, removeFromCart } = useCart();
+  const { removeFromCart } = useCart();
+  const [cartItems, setCartItems] = useState([]);
+  // listCart()
+  useEffect(() => {
+      try {
+        axios.get(
+                "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/carts",
+                {
+                headers: {
+                    "Content-Type": "application/json",
+                    apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // jika pakai token auth
+                },
+                }
+            ).then(function (response) {
+        // Handle successful response
+        setCartItems(response.data.data)
+        console.log(response.data.data);
+      })
+      .catch(function (error) {
+        // Handle errors
+        console.error(error);
+      });
+    } catch {
+      console.log('error');
+    }
+  }, []);
 
-  const totalHarga = cartItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  const totalHarga = cartItems.reduce((sum, item) => sum + (item.activity.price || 0), 0);
+  // const totalHarga = 100;
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
@@ -16,20 +44,20 @@ const CartPage = () => {
         <div className="max-w-4xl mx-auto space-y-4">
           {cartItems.map((item) => (
             <div
-              key={item.id}
+              key={item.activity.id}
               className="bg-white shadow-md rounded-md p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center"
             >
               <div className="mb-4 sm:mb-0">
-                <h3 className="font-bold text-lg text-gray-800">{item.title}</h3>
+                <h3 className="font-bold text-lg text-gray-800">{item.activity.title}</h3>
                 <p className="text-sm text-gray-500">
-                  {item.category?.name || "Kategori tidak tersedia"} • {item.province}
+                  {item.activity.category?.name || "Kategori tidak tersedia"} • {item.activity.province}
                 </p>
                 <p className="text-blue-600 font-semibold mt-1">
-                  Rp {item.price?.toLocaleString("id-ID") || "N/A"}
+                  Rp {item.activity.price?.toLocaleString("id-ID") || "N/A"}
                 </p>
               </div>
               <button
-                onClick={() => removeFromCart(item.id)}
+                onClick={() => removeFromCart(item.activity.id)}
                 className="text-sm bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
               >
                 Hapus
