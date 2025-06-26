@@ -1,54 +1,37 @@
-// src/component/CartContext.jsx
-import { createContext, useContext, useState } from "react";
-import axios from "axios";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [cartCount, setCartCount] = useState(0); // To track cart count
 
-  const addToCart = async (item) => {
-    const exists = cartItems.some((cartItem) => cartItem.id === item.id);
-    if (!exists) {
-      setCartItems((prev) => [...prev, item]);
-      try {
-        await axios.post(
-          "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/add-cart",
-          { activityId: item.id },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Gagal menambahkan ke server:", error.response?.data || error.message);
-      }
+  // Load cart from localStorage on initial load
+  useEffect(() => {
+    const stored = localStorage.getItem("cartItems");
+    if (stored) {
+      const parsedItems = JSON.parse(stored);
+      setCartItems(parsedItems);
+      setCartCount(parsedItems.length);
     }
+  }, []);
+
+  // Save to localStorage whenever the cart changes
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    setCartCount(cartItems.length); // Update cart count
+  }, [cartItems]);
+
+  const addToCart = (item) => {
+    setCartItems((prevItems) => [...prevItems, item]);
   };
 
-  const removeFromCart = async (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-    try {
-        await axios.delete(
-          "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/delete-cart/" + id,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Gagal menghapus dari server:", error.response?.data || error.message);
-      }
+  const removeFromCart = (itemId) => {
+    setCartItems((prevItems) => prevItems.filter(item => item.id !== itemId));
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, cartCount, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

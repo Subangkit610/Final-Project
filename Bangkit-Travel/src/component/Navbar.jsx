@@ -1,7 +1,7 @@
-// src/components/Navbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useCart } from "../component/CartContext"; // Adjust path if necessary
 
 const Navbar = () => {
   let user = null;
@@ -13,9 +13,11 @@ const Navbar = () => {
       console.error("Gagal parse cookie user:", err);
     }
   }
+
+  const { cartCount } = useCart(); // Using cart count from context
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  // const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -27,7 +29,6 @@ const Navbar = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Tutup dropdown jika klik di luar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -41,7 +42,6 @@ const Navbar = () => {
   const handleLogout = () => {
     Cookies.remove("user");
     localStorage.removeItem("token");
-    // setUser(null);
     setIsDropdownOpen(false);
     navigate("/login");
   };
@@ -81,7 +81,14 @@ const Navbar = () => {
           <Link to="/destinations" className="text-blue-900 hover:text-yellow-500 py-2 px-4 block">Destinations</Link>
           <Link to="/promo" className="text-blue-900 hover:text-yellow-500 py-2 px-4 block">Promo</Link>
           <Link to="/contact" className="text-blue-900 hover:text-yellow-500 py-2 px-4 block">Contact</Link>
-          <Link to="/cart" className="text-blue-900 hover:text-yellow-500 py-2 px-4 block">Cart</Link>
+          <Link to="/cart" className="relative text-blue-900 hover:text-yellow-500 py-2 px-4 block">
+            Cart
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </Link>
 
           {user ? (
             <div className="relative mt-4 lg:mt-0" ref={dropdownRef}>
@@ -93,7 +100,6 @@ const Navbar = () => {
                 />
               </button>
 
-              {/* Dropdown */}
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg py-2 z-50 text-sm">
                   <Link
@@ -104,7 +110,7 @@ const Navbar = () => {
                     Profil
                   </Link>
                   <Link
-                    to="/transaksi"
+                    to="/transactions"
                     className="block px-4 py-2 text-blue-900 hover:bg-gray-100"
                     onClick={() => setIsDropdownOpen(false)}
                   >

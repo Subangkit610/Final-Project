@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,12 +7,14 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // ✅
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
+    setSuccessMessage("");
 
     if (!email || !password) {
       setErrorMessage("Email dan Password wajib diisi");
@@ -46,8 +47,11 @@ const Login = () => {
         role: userData.role
       }), { expires: 7 });
 
-      // alert("Login berhasil!");
-      navigate("/");
+      // ✅ Tampilkan pesan sukses
+      setSuccessMessage("✅ Selamat, Anda berhasil login!");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000); // delay 2 detik agar pesan terlihat
 
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Terjadi kesalahan.");
@@ -60,11 +64,19 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-blue-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
+
+        {successMessage && (
+          <div className="bg-green-100 text-green-800 p-3 mb-4 text-center rounded">
+            {successMessage}
+          </div>
+        )}
+
         {errorMessage && (
           <div className="bg-red-200 text-red-700 p-3 mb-4 text-center rounded">
             {errorMessage}
           </div>
         )}
+
         <form onSubmit={handleSubmit}>
           <input
             type="email"
