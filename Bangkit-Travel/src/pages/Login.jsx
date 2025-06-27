@@ -7,7 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // ✅
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -34,27 +34,40 @@ const Login = () => {
         }
       );
 
-      const userData = response.data.data;
       const token = response.data.token;
+      const userData = response.data.data;
 
-      // Simpan token dan data user
+      // Simpan token ke localStorage
       localStorage.setItem("token", token);
-      Cookies.set("user", JSON.stringify({
-        name: userData.name,
-        email: userData.email,
-        photo: userData.profilePictureUrl,
-        phone: userData.phoneNumber,
-        role: userData.role
-      }), { expires: 7 });
 
-      // ✅ Tampilkan pesan sukses
+      // Simpan data user ke cookies
+      Cookies.set(
+        "user",
+        JSON.stringify({
+          name: userData.name,
+          email: userData.email,
+          photo: userData.profilePictureUrl,
+          phone: userData.phoneNumber,
+          role: userData.role,
+        }),
+        { expires: 7 }
+      );
+
+      // Tampilkan pesan sukses
       setSuccessMessage("✅ Selamat, Anda berhasil login!");
-      setTimeout(() => {
-        navigate("/");
-      }, 2000); // delay 2 detik agar pesan terlihat
 
+      // Navigasi berdasarkan role
+      setTimeout(() => {
+        if (userData.role === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 1500);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Terjadi kesalahan.");
+      setErrorMessage(
+        error.response?.data?.message || "Terjadi kesalahan saat login."
+      );
     } finally {
       setLoading(false);
     }
@@ -102,8 +115,12 @@ const Login = () => {
             {loading ? "Memproses..." : "Masuk"}
           </button>
         </form>
+
         <div className="mt-4 text-center">
-          Belum punya akun? <Link to="/register" className="text-blue-600">Daftar</Link>
+          Belum punya akun?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Daftar
+          </Link>
         </div>
       </div>
     </div>

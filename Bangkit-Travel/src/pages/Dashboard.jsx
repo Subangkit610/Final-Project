@@ -1,67 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const [user, setUser] = useState({});
-  const token = localStorage.getItem('token');
+  const [user, setUser] = useState(null);
+  const [summary, setSummary] = useState({});
+  const navigate = useNavigate();
+
+  const API_KEY = "24405e01-fbc1-45a5-9f5a-be13afcd757c";
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    "Content-Type": "application/json",
+    apiKey: API_KEY,
+    Authorization: `Bearer ${token}`,
+  };
 
   useEffect(() => {
-    // Fetch the user data from the API
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(
-          'https://your-api-url.com/user-profile', // Replace with your actual API URL
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+    const storedUser = Cookies.get("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      if (parsedUser.role !== "admin") {
+        alert("Anda bukan admin");
+        navigate("/");
+      } else {
+        setUser(parsedUser);
       }
-    };
+    } else {
+      navigate("/login");
+    }
 
-    fetchUserData();
-  }, [token]);
+    fetchTransactionSummary();
+  }, []);
+
+  const fetchTransactionSummary = async () => {
+    try {
+      const res = await axios.get(
+        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/all-transactions",
+        { headers }
+      );
+      const transactions = res.data.data;
+
+      const total = transactions.length;
+      const totalAmount = transactions.reduce((acc, tx) => acc + tx.total, 0);
+      const pending = transactions.filter((tx) => tx.status === "PENDING").length;
+      const success = transactions.filter((tx) => tx.status === "SUCCESS").length;
+      const cancel = transactions.filter((tx) => tx.status === "CANCEL").length;
+
+      setSummary({
+        total,
+        totalAmount,
+        pending,
+        success,
+        cancel,
+      });
+    } catch (err) {
+      console.error("Gagal memuat ringkasan transaksi:", err);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-blue-900 mb-6">User Profile</h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold text-blue-900 mb-6">Admin Dashboard</h1>
 
-        {/* Profile Section */}
-        <div className="flex items-center mb-6">
-          {/* Profile Image */}
-          <div className="w-24 h-24 mr-6">
-            <img
-              
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNbkECXtEG_6-RV7CSNgNoYUGZE-JCliYm9g&s" 
-                  alt="Profile Picture" 
-                  className="w-full h-full object-cover"
-            />
-          </div>
-          {/* User Details */}
-          <div>
-            <h2 className="text-xl font-semibold text-blue-900">{user.fullName}</h2>
-            <p className="text-gray-700">Email: {user.email}</p>
-            <p className="text-gray-700">Phone: {user.phoneNumber}</p>
-            <p className="text-gray-700">Address: {user.address}</p>
-            <p className="text-gray-700">Bank: {user.bankName}</p>
-            <p className="text-gray-700">Account No: {user.bankAccountNumber}</p>
-          </div>
+      {user && (
+        <div className="mb-6 bg-white rounded shadow p-4">
+          <h2 className="text-xl font-semibold mb-2">Selamat datang, {user.name}</h2>
+          <p className="text-gray-600">Email: {user.email}</p>
+          <p className="text-gray-600">Role: {user.role}</p>
         </div>
+      )}
 
-        {/* Edit Profile Button */}
-        <div className="text-center mt-4">
-          <Link
-            to="/edit-profile"
-            className="bg-blue-900 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-          >
-            Edit Profile
-          </Link>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-sm text-gray-600">Total Transaksi</h3>
+          <p className="text-2xl font-bold">{summary.total || 0}</p>
+        </div>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-sm text-gray-600">Total Pendapatan</h3>
+          <p className="text-2xl font-bold">Rp {summary.totalAmount?.toLocaleString("id-ID") || 0}</p>
+        </div>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-sm text-gray-600">Pending</h3>
+          <p className="text-2xl font-bold text-yellow-600">{summary.pending || 0}</p>
+        </div>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-sm text-gray-600">Sukses</h3>
+          <p className="text-2xl font-bold text-green-600">{summary.success || 0}</p>
+        </div>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-sm text-gray-600">Dibatalkan</h3>
+          <p className="text-2xl font-bold text-red-600">{summary.cancel || 0}</p>
         </div>
       </div>
     </div>
