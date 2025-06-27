@@ -14,8 +14,7 @@ const Navbar = () => {
     }
   }
 
-  const { cartCount } = useCart(); // Using cart count from context
-
+  const { cartCount } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -60,16 +59,13 @@ const Navbar = () => {
         </Link>
 
         {/* Mobile toggle */}
-        <button
-          className="lg:hidden text-blue-900"
-          onClick={toggleMobileMenu}
-        >
+        <button className="lg:hidden text-blue-900" onClick={toggleMobileMenu}>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
 
-        {/* Links */}
+        {/* Menu Links */}
         <div
           className={`lg:flex lg:items-center space-x-2 ${
             isMobileMenuOpen
@@ -101,14 +97,24 @@ const Navbar = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg py-2 z-50 text-sm">
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 text-blue-900 hover:bg-gray-100"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Profil
-                  </Link>
+                <div className="absolute right-0 mt-2 w-44 bg-white rounded shadow-lg py-2 z-50 text-sm">
+                  {user.role === "admin" ? (
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 text-blue-900 hover:bg-gray-100"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-blue-900 hover:bg-gray-100"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Profil
+                    </Link>
+                  )}
                   <Link
                     to="/transactions"
                     className="block px-4 py-2 text-blue-900 hover:bg-gray-100"

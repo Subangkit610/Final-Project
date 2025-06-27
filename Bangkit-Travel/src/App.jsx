@@ -10,6 +10,7 @@ import ProfilePage from "./pages/Profile";
 import CartPage from "./pages/CartPage";
 import PromoPage from "./pages/Promo";
 import TransactionPage from "./pages/TransactionPage";
+import Dashboard from "./pages/Dashboard";
 
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/transactions" element={<TransactionPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>

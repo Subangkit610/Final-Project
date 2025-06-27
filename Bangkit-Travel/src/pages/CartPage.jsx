@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -16,11 +16,12 @@ const CartPage = () => {
   const BASE_URL = "https://travel-journal-api-bootcamp.do.dibimbing.id";
   const token = localStorage.getItem("token");
 
-  const headers = {
+  // Gunakan useMemo agar tidak dianggap missing dependency
+  const headers = useMemo(() => ({
     "Content-Type": "application/json",
     apiKey: API_KEY,
     Authorization: `Bearer ${token}`,
-  };
+  }), [token]);
 
   useEffect(() => {
     if (!token) {
@@ -46,8 +47,8 @@ const CartPage = () => {
 
         const paymentRes = await axios.get(`${BASE_URL}/api/v1/payment-methods`, { headers });
         setPaymentMethods(paymentRes.data.data);
-      } catch (err) {
-        console.error("❌ Gagal memuat data:", err);
+      } catch (error) {
+        console.error("❌ Gagal memuat data:", error);
         alert("Gagal memuat data. Silakan cek koneksi atau login ulang.");
       } finally {
         setLoading(false);
@@ -55,7 +56,7 @@ const CartPage = () => {
     };
 
     fetchData();
-  }, [token]);
+  }, [headers, navigate, token]);
 
   const handleCheckboxChange = (id) => {
     setSelectedItems((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -76,8 +77,8 @@ const CartPage = () => {
         { quantity },
         { headers }
       );
-    } catch (err) {
-      console.error("❌ Gagal update quantity:", err);
+    } catch (error) {
+      console.error("❌ Gagal update quantity:", error);
     }
   };
 
@@ -85,7 +86,7 @@ const CartPage = () => {
     try {
       await axios.delete(`${BASE_URL}/api/v1/delete-cart/${id}`, { headers });
       setCartItems((prev) => prev.filter((item) => item.id !== id));
-    } catch (err) {
+    } catch {
       alert("Gagal menghapus item.");
     }
   };
@@ -97,7 +98,7 @@ const CartPage = () => {
 
   const handleCheckout = async () => {
     const selectedCartIds = Object.entries(selectedItems)
-      .filter(([_, isChecked]) => isChecked)
+      .filter(([, isChecked]) => isChecked)
       .map(([id]) => id);
 
     if (selectedCartIds.length === 0) {
@@ -121,8 +122,8 @@ const CartPage = () => {
       );
       alert("✅ Transaksi berhasil dibuat!");
       navigate("/transactions");
-    } catch (err) {
-      console.error("❌ Gagal membuat transaksi:", err);
+    } catch (error) {
+      console.error("❌ Gagal membuat transaksi:", error);
       alert("Terjadi kesalahan saat checkout.");
     }
   };

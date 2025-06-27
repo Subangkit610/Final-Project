@@ -36,7 +36,7 @@ const Register = () => {
           passwordRepeat: confirmPassword,
           role: "user",
           profilePictureUrl:
-            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d", // Ganti dengan URL gambar yang valid
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d",
         },
         {
           headers: {
@@ -46,12 +46,18 @@ const Register = () => {
         }
       );
 
-      setSuccessMessage("Registrasi sukses! Mengarahkan ke halaman login...");
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
+      if (response?.data?.message) {
+        setSuccessMessage("Registrasi sukses! Mengarahkan ke halaman login...");
+        setTimeout(() => navigate("/login"), 1500);
+      } else {
+        setErrorMessage("Registrasi gagal. Coba lagi.");
+      }
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Terjadi kesalahan.");
+      const errMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Terjadi kesalahan saat registrasi.";
+      setErrorMessage(errMsg);
     }
   };
 
@@ -75,7 +81,9 @@ const Register = () => {
         <form onSubmit={handleSubmit}>
           {/* Input Nama */}
           <div className="mb-4">
-            <label htmlFor="nama" className="block text-sm font-medium text-gray-700">Nama</label>
+            <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
+              Nama
+            </label>
             <input
               type="text"
               id="nama"
@@ -89,7 +97,9 @@ const Register = () => {
 
           {/* Input Email */}
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -103,7 +113,9 @@ const Register = () => {
 
           {/* Input Password */}
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -117,7 +129,9 @@ const Register = () => {
 
           {/* Input Konfirmasi Password */}
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              Konfirmasi Password
+            </label>
             <input
               type="password"
               id="confirmPassword"
