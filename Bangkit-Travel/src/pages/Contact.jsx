@@ -4,7 +4,7 @@ const Contact = () => {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-cover bg-center h-80" style={{ backgroundImage: "url(src/assets/raja-ampat.jpg)" }}>
+      <section className="relative bg-cover bg-center h-80" style={{ backgroundImage: "url(/assets/raja-ampat.jpg)" }}>
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10 container mx-auto text-center text-white px-4 py-32">
           <h1 className="text-3xl md:text-5xl font-extrabold mb-6">Get in Touch with Us</h1>

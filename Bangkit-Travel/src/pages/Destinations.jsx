@@ -132,7 +132,7 @@ const Destinations = () => {
 
       <section
         className="relative bg-cover bg-center h-80"
-        style={{ backgroundImage: "url('src/assets/dieng.jpg')" }}
+        style={{ backgroundImage: "url('/assets/dieng.jpg')" }}
       >
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10 container mx-auto text-center text-white px-4 py-32">
