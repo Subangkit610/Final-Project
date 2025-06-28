@@ -51,7 +51,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
           <img
-            src="/src/assets/logo.png"
+            src="/public/assets/logo.png"
             alt="Bangkit Travel"
             className="w-14 h-14 object-contain"
           />

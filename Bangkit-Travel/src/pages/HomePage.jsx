@@ -95,7 +95,7 @@ const HomePage = () => {
           loop
           muted
           className="absolute inset-0 w-full h-full object-cover"
-          src="src/assets/indonesia.mp4"
+          src="/public/assets/indonesia.mp4"
         />
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10 text-center text-white px-1 py-32">
